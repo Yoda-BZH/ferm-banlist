@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -u
+set -e
+
+directory=$(dirname $0)
+
+if [ -f iplist-unordered.list ]
+then
+	rm iplist-unordered.list
+fi
+
+for i in $directory/*.txt
+do
+	cat $i >> iplist-unordered.list
+done
+
+cat iplist-unordered.list | grep -v '^$' | sort | uniq 
+
+exit 0
+

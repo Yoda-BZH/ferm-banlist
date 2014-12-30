@@ -1,0 +1,41 @@
+#!/bin/bash
+
+set -e
+set -u
+
+ip=$1
+
+if [ -z "$ip" ]
+then
+	echo "Usage: $0 ip"
+	exit 1
+fi
+
+
+whoisfile=/tmp/add-ip-whois
+whois=$(whois $ip > $whoisfile)
+inetnum=$(cat $whoisfile | grep -i inetnum: | head -n 1 | cut -d':' -f 2-)
+if [ -z "$inetnum" ]
+then
+	inetnum=$(cat $whoisfile | grep -i netrange: | head -n 1 | cut -d':' -f 2-)
+fi
+netname=$(cat $whoisfile | grep -i netname: | head -n 1 | cut -d':' -f 2-)
+if [ -z "$netname" ]
+then
+	netname="divers"
+fi
+range=$(ipcalc $inetnum | grep -v deaggregate)
+
+
+#echo "intenum: $inetnum"
+#echo "netname: $netname"
+#echo "range: $range"
+
+for r in $range
+do
+	echo $r >> $netname.txt
+done
+
+rm $whoisfile
+exit 0
+
