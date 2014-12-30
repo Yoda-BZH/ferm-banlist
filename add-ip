@@ -33,7 +33,7 @@ range=$(ipcalc $inetnum | grep -v deaggregate)
 
 for r in $range
 do
-	echo $r >> $netname.txt
+	echo $r >> lists/$netname.txt
 done
 
 rm $whoisfile

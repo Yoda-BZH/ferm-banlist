@@ -10,12 +10,14 @@ then
 	rm iplist-unordered.list
 fi
 
-for i in $directory/*.txt
+for i in $directory/lists/*.txt
 do
 	cat $i >> iplist-unordered.list
 done
 
-cat iplist-unordered.list | grep -v '^$' | sort | uniq 
+cat iplist-unordered.list | grep -v '^$' | sort | uniq
+
+rm iplist-unordered.list
 
 exit 0
 
