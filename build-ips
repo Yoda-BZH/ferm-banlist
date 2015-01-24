@@ -15,7 +15,10 @@ do
 	cat $i >> iplist-unordered.list
 done
 
-cat iplist-unordered.list | grep -v '^$' | sort | uniq
+for i in $(cat iplist-unordered.list | grep -v '^$' | sort | uniq)
+do
+	echo -n "$i "
+done
 
 rm iplist-unordered.list
 
