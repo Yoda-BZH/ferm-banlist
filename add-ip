@@ -19,7 +19,7 @@ if [ -z "$inetnum" ]
 then
 	inetnum=$(cat $whoisfile | grep -i netrange: | head -n 1 | cut -d':' -f 2-)
 fi
-netname=$(cat $whoisfile | grep -i netname: | head -n 1 | cut -d':' -f 2-)
+netname=$(cat $whoisfile | grep -i netname: | head -n 1 | cut -d':' -f 2- | awk '{print $1; }')
 if [ -z "$netname" ]
 then
 	netname="divers"
