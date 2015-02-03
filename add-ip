@@ -37,7 +37,7 @@ then
 	exit 1
 fi
 
-isInvalid=$(echo $range | grep 'INVALID ADDRESS')
+isInvalid=$(echo $range | grep 'INVALID ADDRESS' || true)
 if [ ! -z "$isInvalid" ]
 then
 	#echo "And error occured while treating range '$inetnum'."
