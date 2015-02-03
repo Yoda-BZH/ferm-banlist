@@ -40,10 +40,36 @@ fi
 isInvalid=$(echo $range | grep 'INVALID ADDRESS')
 if [ ! -z "$isInvalid" ]
 then
-	echo "And error occured while treating range '$inetnum'."
-	echo "It returned :"
-	echo $range
-	exit 1
+	#echo "And error occured while treating range '$inetnum'."
+	#echo "It returned :"
+	#echo $range
+	#exit 1
+	inetname=$(cat $whoisfile | grep -i aut-num | head -n 1 | cut -d':' -f 2- | awk '{ print $1; }')
+	nbDigit=$(echo $inetnum | cut -d/ -f 1 | tr '.' ' ' | wc -w)
+	ipRange=$(echo $inetnum | cut -d/ -f 1)
+	netmask=$(echo $inetnum | cut -d/ -f 2)
+	case $nbDigit in
+		4)
+			echo "An error occured, $inetnum seems a good range :("
+			exit 1
+			;;
+
+		3)
+			range="$ipRange.0/$netmask"
+			;;
+
+		2)
+			range="$ipRange.0.0/$netmask"
+			;;
+		1)
+			echo "Warning, missing 3 digits in ip '$inetnum' !"
+			range="$ipRange.0.0.0/$netmask"
+			;;
+		*)
+			echo "An error occured while treating ip '$inetnum'"
+			exit 1
+			;;
+	esac
 fi
 
 
