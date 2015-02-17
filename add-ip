@@ -14,6 +14,11 @@ fi
 
 whoisfile=/tmp/add-ip-whois
 whois=$(whois $ip > $whoisfile)
+if [ $? -ne 0 ]
+then
+	echo "Unable to get informations from whois for $ip"
+	exit 1
+fi
 inetnum=$(cat $whoisfile | grep -i inetnum: | head -n 1 | cut -d':' -f 2-)
 if [ -z "$inetnum" ]
 then
