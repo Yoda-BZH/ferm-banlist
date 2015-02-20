@@ -1,0 +1,27 @@
+#!/bin/bash
+
+dir="lists"
+
+IFS="
+"
+
+for i in $(cat $dir/*.txt | sort | uniq -c | sort -r)
+do
+	nb=$(echo $i | awk '{ print $1 }')
+	if [ $nb -eq 1 ]
+	then
+		exit
+	fi
+
+	ip=$(echo $i | awk '{ print $2 }')
+	echo "Treating $ip ..."
+	#grep -n "$ip" $dir/*.txt
+	for element in $(grep -n "$ip" $dir/*.txt | tail -n +2)
+	do
+		file=$(echo $element | cut -d':' -f 1)
+		line=$(echo $element | cut -d':' -f 2)
+		echo "deleting line $line in file $file"
+		sed --in-place "${line}d" $file
+	done
+done
+
