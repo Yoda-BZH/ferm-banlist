@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -u
+
+tmpl="saddr %s proto tcp dport ssh DROP;"
+for file in lists/*.txt
+do
+	filename=$(basename $file)
+	name=${filename/\.txt/}
+
+	for i in $(cat $file | sort -n | uniq)
+	do
+		printf "$tmpl" "$i"
+		echo ""
+	done > ferm.d/$name.conf
+done
+
+
+exit 0
+
