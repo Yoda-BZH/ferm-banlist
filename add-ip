@@ -24,15 +24,31 @@ if [ -z "$inetnum" ]
 then
 	inetnum=$(cat $whoisfile | grep -i netrange: | head -n 1 | cut -d':' -f 2-)
 fi
+
+if [ -z "$inetnum" ]
+then
+	inetnum=$(cat $whoisfile | grep -i '\[Network Number\]' | head -n 1 | cut -d ']' -f 2-)
+fi
+
 netname=$(cat $whoisfile | grep -i netname: | head -n 1 | cut -d':' -f 2- | awk '{print $1; }')
 if [ -z "$netname" ]
 then
 	netname=$(cat $whoisfile | grep -i aut-name | head -n 1 | cut -d':' -f 2- | awk '{ print $1; }')
-	if [ -z "$netname" ]
-	then
-		netname="divers"
-	fi
 fi
+
+if [ -z "$netname" ]
+then
+	netname=$(cat $whoisfile | grep -i '\[Network Name\]' | head -n 1 | cut -d ']' -f 2-)
+fi
+
+if [ -z "$netname" ]
+then
+	netname="divers"
+fi
+
+## bash trim
+netname=$(echo $netname)
+inetnum=$(echo $inetnum)
 
 isCidr=$(echo $inetnum | grep '/' || true)
 if [ ! -z "$isCidr" ]
@@ -41,6 +57,13 @@ then
 else
 	range=$(ipcalc $inetnum | grep -v deaggregate)
 	if [ $? -ne 0 ]
+	then
+		echo "And error occured while treating range '$inetnum'."
+		echo "It returned :"
+		echo $range
+		exit 1
+	fi
+	if [ -n "$(echo $range | grep Usage)" ]
 	then
 		echo "And error occured while treating range '$inetnum'."
 		echo "It returned :"
