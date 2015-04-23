@@ -19,6 +19,14 @@ then
 	echo "Unable to get informations from whois for $ip"
 	exit 1
 fi
+
+if [ -n "$(cat $whoisfile | grep -i 'no match')" ]
+then
+	echo "No match for $ip"
+	echo $ip/32 >> lists/divers.txt
+	exit 0
+fi
+
 inetnum=$(cat $whoisfile | grep -i inetnum: | head -n 1 | cut -d':' -f 2-)
 if [ -z "$inetnum" ]
 then
@@ -68,6 +76,7 @@ else
 		echo "And error occured while treating range '$inetnum'."
 		echo "It returned :"
 		echo $range
+		echo $ip/32 >> lists/divers.txt
 		exit 1
 	fi
 fi
